@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: prototype/Dockerfile
+    container_name: crypto-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - main-api
+    networks:
+      - crypto-network
+    restart: unless-stopped
+
+  # Main API Gateway
+  main-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: crypto-main-api
+    ports:
+      - "8000:8000"
+    environment:
+      - ANALYSIS_SERVICE_URL=http://analysis-service:8007
+      - PREDICTION_SERVICE_URL=http://prediction-service:8006
+      - SENTIMENT_SERVICE_URL=http://sentiment-service:8008
+    volumes:
+      - ./database:/app/database
+      - ./data:/app/data
+    depends_on:
+      - analysis-service
+      - prediction-service
+      - sentiment-service
+    networks:
+      - crypto-network
+    restart: unless-stopped
+
+  # Analysis Service
+  analysis-service:
+    build:
+      context: .
+      dockerfile: analysis-service/Dockerfile
+    container_name: crypto-analysis-service
+    ports:
+      - "8007:8007"
+    environment:
+      - BASE_DIR=/app
+    volumes:
+      - ./database:/app/database
+    networks:
+      - crypto-network
+    restart: unless-stopped
+
+  # Prediction Service
+  prediction-service:
+    build:
+      context: .
+      dockerfile: prediction-service/Dockerfile
+    container_name: crypto-prediction-service
+    ports:
+      - "8006:8006"
+    environment:
+      - BASE_DIR=/app
+    volumes:
+      - ./database:/app/database
+      - ./models:/app/models
+    networks:
+      - crypto-network
+    restart: unless-stopped
+
+  # Sentiment Service
+  sentiment-service:
+    build:
+      context: .
+      dockerfile: sentiment-service/Dockerfile
+    container_name: crypto-sentiment-service
+    ports:
+      - "8008:8008"
+    environment:
+      - BASE_DIR=/app
+    networks:
+      - crypto-network
+    restart: unless-stopped
+
+networks:
+  crypto-network:
+    driver: bridge
+
+
+

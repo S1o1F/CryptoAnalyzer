@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoAnalyzer - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="language-switcher" id="languageSwitcher">
+        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" data-lang="mk" onclick="setLanguage('mk')">MK</button>
+    </div>
+
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <svg class="login-logo-icon" viewBox="0 0 24 24" width="48" height="48">
+                    <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            
+            <h1 class="login-title" data-translate="loginTitle">Log in to<br>CryptoAnalyzer</h1>
+            <p class="login-subtitle" data-translate="loginSubtitle">Access your market insights</p>
+            
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="login-field">
+                    <label for="loginEmail" data-translate="email">Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">✉</span>
+                        <input type="email" id="loginEmail" data-translate-placeholder="emailPlaceholder" placeholder="john.doe@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="login-field">
+                    <label for="loginPassword" data-translate="password">Password</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        <input type="password" id="loginPassword" data-translate-placeholder="passwordPlaceholder" placeholder="••••••••" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login" data-translate="loginBtn">Login</button>
+            </form>
+            
+            <div class="login-links">
+                <a href="#" class="forgot-password" data-translate="forgotPassword">Forgot Password?</a>
+                <p class="signup-link"><span data-translate="noAccount">Don't have an account?</span> <a href="#" onclick="showSignupMessage()" data-translate="signUp">Sign up</a></p>
+            </div>
+            
+            <div class="login-divider"></div>
+        </div>
+    </div>
+
+
+
+    <div class="app-container" id="appContainer" style="display: none;">
+
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-icon">⌂</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">▦</span>
+                    <span class="nav-text" data-translate="navDashboard">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="portfolio">
+                    <span class="nav-icon">★</span>
+                    <span class="nav-text" data-translate="navPortfolio">Favorites</span>
+                </a>
+                <a href="#" class="nav-item" data-page="predict">
+                    <span class="nav-icon">↗</span>
+                    <span class="nav-text" data-translate="navPredict">Prediction</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <span class="nav-icon">☰</span>
+                    <span class="nav-text" data-translate="navHistory">History</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙</span>
+                    <span class="nav-text" data-translate="navSettings">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title" id="pageTitle">Dashboard</div>
+                <div class="top-bar-actions">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="globalSearch" placeholder="Search cryptocurrencies..." onkeyup="handleSearch(event)" autocomplete="off">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <span>↻</span> <span data-translate="refreshData">Refresh Data</span>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User">
+                    </div>
+                </div>
+            </header>
+
+
+            <section id="page-dashboard" class="page active">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="totalMarketCap">Total Market Cap</span>
+                        <span class="stat-value" id="totalMarketCap">$2.34T</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="totalVolume">24h Total Volume</span>
+                        <span class="stat-value" id="totalVolume">$98.7B</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="btcDominance">Bitcoin Dominance</span>
+                        <span class="stat-value" id="btcDominance">52.1%</span>
+                    </div>
+                </div>
+
+
+                <div class="section-card">
+                    <h2 class="section-title" data-translate="topCryptos">Top Cryptocurrencies</h2>
+                    <table class="crypto-table">
+                        <thead>
+                            <tr>
+                                <th data-translate="symbol">Symbol</th>
+                                <th data-translate="name">Name</th>
+                                <th data-translate="lastPrice">Last Price</th>
+                                <th data-translate="change24h">24h Change</th>
+                                <th data-translate="volume24h">24h Volume</th>
+                                <th data-translate="trend">Trend</th>
+                                <th data-translate="actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cryptoTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title" data-translate="marketCapTrend">Market Cap Trend</h3>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 400 150" class="trend-chart">
+                                <polyline points="0,100 50,90 100,95 150,70 200,75 250,60 300,50 350,55 400,40" 
+                                    fill="none" stroke="#10b981" stroke-width="2"/>
+                            </svg>
+                            <div class="chart-labels">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title" data-translate="volumeTrend">24h Volume Trend</h3>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 400 150" class="trend-chart">
+                                <polyline points="0,80 50,70 100,90 150,60 200,85 250,50 300,70 350,45 400,55" 
+                                    fill="none" stroke="#3b82f6" stroke-width="2"/>
+                            </svg>
+                            <div class="chart-labels">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section id="page-crypto-detail" class="page">
+                <div class="crypto-header">
+                    <div class="crypto-title">
+                        <h1><span id="detailName">Bitcoin</span> <span class="symbol-tag" id="detailSymbol">BTC</span></h1>
+                        <div class="current-price">
+                            <span class="price-value" id="detailPrice">$68,500.23</span>
+                            <span class="price-change positive" id="detailChange">+$1,234.56 (1.83%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-stats">
+                    <div class="detail-stat-card">
+                        <span class="detail-stat-label">24h High</span>
+                        <span class="detail-stat-value" id="detail24hHigh">$69,800.50</span>
+                    </div>
+                    <div class="detail-stat-card">
+                        <span class="detail-stat-label">24h Low</span>
+                        <span class="detail-stat-value negative" id="detail24hLow">$67,000.10</span>
+                    </div>
+                    <div class="detail-stat-card">
+                        <span class="detail-stat-label">24h Volume</span>
+                        <span class="detail-stat-value" id="detail24hVolume">$35.2B</span>
+                    </div>
+                    <div class="detail-stat-card">
+                        <span class="detail-stat-label">Avg. Daily Volatility</span>
+                        <span class="detail-stat-value" id="detailVolatility">3.5%</span>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">Price & Volume (24h)</h3>
+                    <div class="bar-chart-container">
+                        <div class="bar-chart" id="priceVolumeChart">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">Price History</h3>
+                    <table class="price-history-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Open</th>
+                                <th>High</th>
+                                <th>Low</th>
+                                <th>Close</th>
+                                <th>Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="priceHistoryBody">
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="page-crypto-info" class="page">
+                <div class="info-header">
+                    <button class="btn-back" onclick="backToDashboard()">
+                        ← <span data-translate="navDashboard">Dashboard</span>
+                    </button>
+                    <div class="info-title-section">
+                        <h1>
+                            <span class="info-symbol-tag" id="infoSymbol">Bitcoin</span>
+                        </h1>
+                        <div class="info-price-section">
+                            <span class="info-current-price" id="infoCurrentPrice">$0.00</span>
+                            <span class="info-price-change positive" id="infoChange">+0.00%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="cryptoInfoContent">
+                </div>
+            </section>
+
+            <section id="page-portfolio" class="page">
+                <div class="portfolio-header">
+                    <h1 data-translate="myPortfolio">My Favorites</h1>
+                    <button class="btn-primary" onclick="showAddCryptoModal()" data-translate="addCrypto">
+                        + Add Cryptocurrency
+                    </button>
+                </div>
+
+                <div class="section-card">
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Coin</th>
+                                <th>Price</th>
+                                <th>24h Change</th>
+                                <th>24h Volume</th>
+                                <th>Trend (24h)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="portfolioTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <p class="empty-portfolio" id="emptyPortfolio" style="display: none;">
+                    Your favorites list is empty. Click "Add Cryptocurrency" to start tracking your favorite coins!
+                </p>
+            </section>
+
+            <section id="page-predict" class="page">
+                <div class="predict-header">
+                    <h1 data-translate="predictTitle">Price Prediction</h1>
+                    <p class="page-description" data-translate="predictDesc">Predict the next day's price based on the last 7 days of data</p>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoPredict">Select Cryptocurrency</h3>
+                    
+                    <div class="predict-form">
+                        <div class="form-group">
+                            <label data-translate="chooseCryptoLabel">Choose a cryptocurrency:</label>
+                            <select id="predictCryptoSelect" class="form-input" style="max-width: 300px;">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn-primary" onclick="calculatePrediction()" data-translate="predictBtn">
+                            Predict Price
+                        </button>
+                    </div>
+                </div>
+
+                <div id="predictionResult" class="section-card prediction-result" style="display: none;">
+                    <h3 class="section-title" data-translate="predictionResult">Prediction Result</h3>
+                    
+                    <div class="prediction-content">
+                        <div class="prediction-crypto">
+                            <span class="prediction-symbol" id="predictSymbol">BTC</span>
+                            <span class="prediction-name" id="predictName">Bitcoin</span>
+                        </div>
+                        
+                        <div class="prediction-grid">
+                            <div class="prediction-card current">
+                                <span class="prediction-label" data-translate="currentPrice">Current Price</span>
+                                <span class="prediction-value" id="currentPriceValue">$0.00</span>
+                            </div>
+                            <div class="prediction-card predicted">
+                                <span class="prediction-label" data-translate="predictedPrice">Predicted Price (Tomorrow)</span>
+                                <span class="prediction-value" id="predictedPriceValue">$0.00</span>
+                            </div>
+                            <div class="prediction-card change">
+                                <span class="prediction-label" data-translate="expectedChange">Expected Change</span>
+                                <span class="prediction-value" id="expectedChangeValue">0%</span>
+                            </div>
+                        </div>
+
+                        <div class="prediction-chart">
+                            <h4 data-translate="last7DaysPrediction">Last 7 Days + Prediction</h4>
+                            <div class="prediction-bars" id="predictionBars"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="page-history" class="page">
+                <div class="history-header">
+                    <h1 data-translate="historyTitle">Historical Data</h1>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoHistory">Select Cryptocurrency</h3>
+                    <div class="history-form">
+                        <div class="form-group">
+                            <label data-translate="chooseCryptoLabel">Choose a cryptocurrency:</label>
+                            <select id="historyCryptoSelect" class="form-input" style="max-width: 300px;" onchange="loadHistoryData()">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="historyContent" style="display: none;">
+                </div>
+            </section>
+
+            <section id="page-settings" class="page">
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-settings-tab="profile" data-translate="profile">Profile</button>
+                    <button class="settings-tab" data-settings-tab="notifications" data-translate="notifications">Notifications</button>
+                    <button class="settings-tab" data-settings-tab="integrations" data-translate="integrations">Integrations</button>
+                    <button class="settings-tab" data-settings-tab="appearance" data-translate="appearance">Appearance</button>
+                </div>
+
+                <div class="settings-content active" id="settings-profile">
+                    <div class="section-card">
+                        <h3 class="section-title" data-translate="personalInfo">Personal Information</h3>
+                        <p class="section-subtitle" data-translate="personalInfoDesc">Manage your name, email, and profile picture.</p>
+                        
+                        <div class="form-group">
+                            <label data-translate="nameLabel">Name</label>
+                            <input type="text" value="Alex Johnson" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="emailLabel">Email</label>
+                            <input type="email" value="alex.johnson@example.com" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="profilePicture">Profile Picture</label>
+                            <div class="profile-picture-row">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Profile" class="profile-picture">
+                                <button class="btn-secondary" data-translate="edit">Edit</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card">
+                        <h3 class="section-title" data-translate="passwordMgmt">Password Management</h3>
+                        <p class="section-subtitle" data-translate="passwordMgmtDesc">Change your password securely.</p>
+                        <button class="btn-secondary" data-translate="changePassword">Change Password</button>
+                    </div>
+
+                    <div class="section-card logout-section">
+                        <h3 class="section-title" data-translate="session">Session</h3>
+                        <p class="section-subtitle" data-translate="sessionDesc">Log out from your account.</p>
+                        <button class="btn-logout" onclick="logout()" data-translate="logOut">🚪 Log Out</button>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn-primary" data-translate="saveChanges">Save Changes</button>
+                        <button class="btn-secondary" data-translate="cancel">Cancel</button>
+                    </div>
+                </div>
+
+                <div class="settings-content" id="settings-notifications">
+                    <div class="section-card">
+                        <h3 class="section-title">Notification Preferences</h3>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <span>Price Alerts</span>
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="toggle-label">
+                                <span>Portfolio Updates</span>
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="toggle-label">
+                                <span>Market News</span>
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-content" id="settings-appearance">
+                    <div class="section-card">
+                        <h3 class="section-title">Theme</h3>
+                        <div class="theme-options">
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="light" checked>
+                                <span class="theme-preview light"></span>
+                                <span>Light</span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="dark">
+                                <span class="theme-preview dark"></span>
+                                <span>Dark</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p data-translate="footerText">© 2025 CryptoAnalyzer. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
+
+
+    <div class="modal" id="addCryptoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Cryptocurrency to Watchlist</h3>
+                <button class="modal-close" onclick="closeAddCryptoModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Cryptocurrency</label>
+                    <select id="cryptoSelect" class="form-input">
+                        <option value="">-- Choose a cryptocurrency --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddCryptoModal()">Cancel</button>
+                <button class="btn-primary" onclick="addToWatchlist()">Add to Watchlist</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

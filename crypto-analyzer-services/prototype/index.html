@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="mk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoAnalyzer - Login</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- dvojazicnost -->
+    <div class="language-switcher" id="languageSwitcher">
+        <button class="lang-btn active" data-lang="en" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" data-lang="mk" onclick="setLanguage('mk')">MK</button>
+    </div>
+
+    <!-- za login na pocetok  -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="login-logo">
+                <svg class="login-logo-icon" viewBox="0 0 24 24" width="48" height="48">
+                    <path fill="currentColor" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+            </div>
+            
+            <h1 class="login-title" data-translate="loginTitle">Log in to<br>CryptoAnalyzer</h1>
+            <p class="login-subtitle" data-translate="loginSubtitle">Access your market insights</p>
+            
+            <form class="login-form" onsubmit="handleLogin(event)">
+                <div class="login-field">
+                    <label for="loginEmail" data-translate="email">Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">@</span>
+                        <input type="email" id="loginEmail" data-translate-placeholder="emailPlaceholder" placeholder="john.doe@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="login-field">
+                    <label for="loginPassword" data-translate="password">Password</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">*</span>
+                        <input type="password" id="loginPassword" data-translate-placeholder="passwordPlaceholder" placeholder="••••••••" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login" data-translate="loginBtn">Login</button>
+            </form>
+            
+            <div class="login-links">
+                <a href="#" class="forgot-password" data-translate="forgotPassword">Forgot Password?</a>
+                <p class="signup-link"><span data-translate="noAccount">Don't have an account?</span> <a href="#" onclick="showSignupMessage()" data-translate="signUp">Sign up</a></p>
+            </div>
+            
+            <div class="login-divider"></div>
+        </div>
+    </div>
+
+    <div class="app-container" id="appContainer" style="display: none;">
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <span class="logo-icon">⌂</span>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <span class="nav-icon">▦</span>
+                    <span class="nav-text" data-translate="navDashboard">Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="portfolio">
+                    <span class="nav-icon">★</span>
+                    <span class="nav-text" data-translate="navPortfolio">Favorites</span>
+                </a>
+                <a href="#" class="nav-item" data-page="predict">
+                    <span class="nav-icon">↗</span>
+                    <span class="nav-text" data-translate="navPredict">Prediction</span>
+                </a>
+                <a href="#" class="nav-item" data-page="history">
+                    <span class="nav-icon">☰</span>
+                    <span class="nav-text" data-translate="navHistory">History</span>
+                </a>
+                <a href="#" class="nav-item" data-page="technical">
+                    <span class="nav-icon">◈</span>
+                    <span class="nav-text" data-translate="navTechnical">Technical Analysis</span>
+                </a>
+                <a href="#" class="nav-item" data-page="onchain">
+                    <span class="nav-icon">●</span>
+                    <span class="nav-text" data-translate="navOnChain">On-Chain Metrics</span>
+                </a>
+                <a href="#" class="nav-item" data-page="sentiment">
+                    <span class="nav-icon">SA</span>
+                    <span class="nav-text" data-translate="navSentiment">Sentiment Analysis</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <span class="nav-icon">⚙</span>
+                    <span class="nav-text" data-translate="navSettings">Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title" id="pageTitle">Dashboard</div>
+                <div class="top-bar-actions">
+                    <div class="search-box">
+                        <span class="search-icon">⌕</span>
+                        <input type="text" id="globalSearch" placeholder="Search cryptocurrencies..." onkeyup="handleSearch(event)" autocomplete="off">
+                        <div class="search-results" id="searchResults"></div>
+                    </div>
+                    <button class="btn-refresh" onclick="refreshData()">
+                        <span>↻</span> <span data-translate="refreshData">Refresh Data</span>
+                    </button>
+                    <div class="user-avatar">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="User">
+                    </div>
+                </div>
+            </header>
+
+            <section id="page-dashboard" class="page active">
+                <div class="stats-cards">
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="totalMarketCap">Total Market Cap</span>
+                        <span class="stat-value" id="totalMarketCap">$2.34T</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="totalVolume">24h Total Volume</span>
+                        <span class="stat-value" id="totalVolume">$98.7B</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label" data-translate="btcDominance">Bitcoin Dominance</span>
+                        <span class="stat-value" id="btcDominance">52.1%</span>
+                    </div>
+                </div>
+
+                <div class="section-card">
+                    <h2 class="section-title" data-translate="topCryptos">Top Cryptocurrencies</h2>
+                    <table class="crypto-table">
+                        <thead>
+                            <tr>
+                                <th data-translate="symbol">Symbol</th>
+                                <th data-translate="name">Name</th>
+                                <th data-translate="lastPrice">Last Price</th>
+                                <th data-translate="change24h">24h Change</th>
+                                <th data-translate="volume24h">24h Volume</th>
+                                <th data-translate="trend">Trend</th>
+                                <th data-translate="actions">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cryptoTableBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 class="chart-title" data-translate="marketCapTrend">Market Cap Trend</h3>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 400 150" class="trend-chart">
+                                <polyline points="0,100 50,90 100,95 150,70 200,75 250,60 300,50 350,55 400,40" 
+                                    fill="none" stroke="#10b981" stroke-width="2"/>
+                            </svg>
+                            <div class="chart-labels">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <h3 class="chart-title" data-translate="volumeTrend">24h Volume Trend</h3>
+                        <div class="chart-placeholder">
+                            <svg viewBox="0 0 400 150" class="trend-chart">
+                                <polyline points="0,80 50,70 100,90 150,60 200,85 250,50 300,70 350,45 400,55" 
+                                    fill="none" stroke="#3b82f6" stroke-width="2"/>
+                            </svg>
+                            <div class="chart-labels">
+                                <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Crypto Info Page (Full Screen) -->
+            <section id="page-crypto-info" class="page">
+                <div class="info-header">
+                    <button class="btn-back" onclick="backToDashboard()">
+                        ← <span data-translate="navDashboard">Dashboard</span>
+                    </button>
+                    <div class="info-title-section">
+                        <h1>
+                            <span class="info-symbol-tag" id="infoSymbol">Bitcoin</span>
+                        </h1>
+                        <div class="info-price-section">
+                            <span class="info-current-price" id="infoCurrentPrice">$0.00</span>
+                            <span class="info-price-change positive" id="infoChange">+0.00%</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Technical Analysis Card -->
+                <div class="section-card" id="technicalAnalysisCard" style="display: none;">
+                    <h3 class="section-title">Technical Analysis</h3>
+                    <div class="detail-stats" style="margin-bottom: 1.5rem;">
+                        <div class="detail-stat-card">
+                            <span class="detail-stat-label">Signal</span>
+                            <span class="detail-stat-value" id="taSignal">-</span>
+                        </div>
+                        <div class="detail-stat-card">
+                            <span class="detail-stat-label">RSI</span>
+                            <span class="detail-stat-value" id="taRSI">-</span>
+                        </div>
+                        <div class="detail-stat-card">
+                            <span class="detail-stat-label">ADX</span>
+                            <span class="detail-stat-value" id="taADX">-</span>
+                        </div>
+                        <div class="detail-stat-card">
+                            <span class="detail-stat-label">MACD</span>
+                            <span class="detail-stat-value" id="taMACD">-</span>
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin-bottom: 1rem;">All Indicators</h4>
+                    <table class="price-history-table">
+                        <thead>
+                            <tr>
+                                <th>Indicator</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="taIndicatorsTable"></tbody>
+                    </table>
+                </div>
+
+                <!-- Price Chart Section -->
+                <div class="section-card" id="priceChartCard" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 1rem;">
+                        <h3 class="section-title" style="margin-bottom: 0;">Price Chart (Last 30 Days)</h3>
+                        <div id="chartStats" style="display: flex; gap: 1.5rem; font-size: 0.9rem;">
+                            <span style="padding: 0.5rem 1rem; background: rgba(16, 185, 129, 0.1); border-radius: 6px;"><strong>High:</strong> <span id="chartHigh" style="color: var(--success);">-</span></span>
+                            <span style="padding: 0.5rem 1rem; background: rgba(239, 68, 68, 0.1); border-radius: 6px;"><strong>Low:</strong> <span id="chartLow" style="color: var(--danger);">-</span></span>
+                            <span style="padding: 0.5rem 1rem; background: rgba(59, 130, 246, 0.1); border-radius: 6px;"><strong>Avg:</strong> <span id="chartAvg" style="color: var(--info);">-</span></span>
+                        </div>
+                    </div>
+                    <div id="priceChartContainer" style="position: relative; height: 280px; background: linear-gradient(180deg, var(--bg-body) 0%, #fff 100%); border-radius: 12px; padding: 1.5rem;">
+                        <canvas id="priceChart" style="width: 100%; height: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- On-Chain Metrics Section -->
+                <div class="section-card" id="onchainMetricsCard" style="display: none;">
+                    <h3 class="section-title">On-Chain Metrics</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.9rem;">
+                        Blockchain network activity indicators that provide insights into network health and adoption
+                    </p>
+                    
+                    <div class="onchain-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                        <!-- Active Addresses Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #3b82f6;">
+                                    AA
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Active Addresses</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Network activity indicator</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainActiveAddresses" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainActiveAddressesChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainActiveAddressesDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- Transactions Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #10b981;">
+                                    TX
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Transactions</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Activity volume measure</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainTransactions" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainTransactionsChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainTransactionsDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Historical Trend Chart Placeholder -->
+                    <div id="onchainChartContainer" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <h4 style="margin-bottom: 1rem; font-size: 0.95rem; color: var(--text-secondary);">7-Day Trend</h4>
+                        <div style="height: 200px; background: var(--bg-body); border-radius: 8px; padding: 1rem; position: relative;">
+                            <canvas id="onchainChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="cryptoInfoContent">
+                </div>
+            </section>
+
+            <section id="page-portfolio" class="page">
+                <div class="portfolio-header">
+                    <h1 data-translate="myPortfolio">My Favorites</h1>
+                    <button class="btn-primary" onclick="showAddCryptoModal()" data-translate="addCrypto">
+                        + Add Cryptocurrency
+                    </button>
+                </div>
+
+                <div class="section-card">
+                    <table class="portfolio-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Coin</th>
+                                <th>Price</th>
+                                <th>24h Change</th>
+                                <th>24h Volume</th>
+                                <th>Trend (24h)</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="portfolioTableBody">
+                        </tbody>
+                    </table>
+                </div>
+                <p class="empty-portfolio" id="emptyPortfolio" style="display: none;">
+                    Your favorites list is empty. Click "Add Cryptocurrency" to start tracking your favorite coins!
+                </p>
+            </section>
+
+            <!-- Prediction Page -->
+            <section id="page-predict" class="page">
+                <div class="predict-header">
+                    <h1 data-translate="predictTitle">Price Prediction</h1>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title">LSTM Price Prediction</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 1rem;">Deep Learning model trained on OHLCV data</p>
+                    
+                    <div class="predict-form" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom: 0; flex: 1; min-width: 200px; max-width: 350px;">
+                            <label>Choose cryptocurrency:</label>
+                            <select id="predictCryptoSelect" class="form-input" style="width: 100%;">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="getLSTMPrediction()">Get LSTM Prediction</button>
+                    </div>
+                </div>
+
+                <div id="predictionResult" class="section-card" style="display: none;">
+                    <h3 class="section-title">Prediction Result</h3>
+                    <div class="prediction-content">
+                        <div class="prediction-crypto">
+                            <span class="prediction-symbol" id="predictSymbol">-</span>
+                            <span class="prediction-name" id="predictName">-</span>
+                            <span class="prediction-signal" id="predictionSignal">-</span>
+                        </div>
+                        <div class="prediction-grid">
+                            <div class="prediction-card current">
+                                <span class="prediction-label">Current Price</span>
+                                <span class="prediction-value" id="currentPriceValue">$0.00</span>
+                            </div>
+                            <div class="prediction-card predicted">
+                                <span class="prediction-label">Predicted Price (Next Day)</span>
+                                <span class="prediction-value" id="predictedPriceValue">$0.00</span>
+                            </div>
+                            <div class="prediction-card change">
+                                <span class="prediction-label">Expected Change</span>
+                                <span class="prediction-value" id="expectedChangeValue">0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Model Metrics -->
+                    <div id="modelMetrics" style="display: none; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+                        <h4 style="margin-bottom: 1rem; color: var(--text-secondary);">Model Performance Metrics</h4>
+                        <!-- Metrics will be populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- History Page -->
+            <section id="page-history" class="page">
+                <div class="history-header">
+                    <h1 data-translate="historyTitle">Historical Data</h1>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoHistory">Select Cryptocurrency</h3>
+                    <div class="history-form">
+                        <div class="form-group">
+                            <label data-translate="chooseCryptoLabel">Choose a cryptocurrency:</label>
+                            <select id="historyCryptoSelect" class="form-input" style="max-width: 300px;" onchange="loadHistoryData()">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="historyContent" style="display: none;">
+                    <div class="section-card">
+                        <h3 class="section-title">Price History</h3>
+                        <table class="price-history-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Open</th>
+                                    <th>High</th>
+                                    <th>Low</th>
+                                    <th>Close</th>
+                                    <th>Volume</th>
+                                </tr>
+                            </thead>
+                            <tbody id="priceHistoryBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technical Analysis Page -->
+            <section id="page-technical" class="page">
+                <div class="technical-header">
+                    <h1 data-translate="technicalTitle">Technical Analysis</h1>
+                    <p class="page-description" data-translate="technicalDesc">Analyze cryptocurrencies using 10 technical indicators across multiple timeframes</p>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoTechnical">Select Cryptocurrency & Timeframe</h3>
+                    <div class="technical-form" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom: 0; min-width: 200px;">
+                            <label data-translate="chooseCryptoLabel">Cryptocurrency:</label>
+                            <select id="technicalCryptoSelect" class="form-input">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0; min-width: 150px;">
+                            <label>Timeframe:</label>
+                            <select id="technicalTimeframe" class="form-input">
+                                <option value="1d">1 Day</option>
+                                <option value="1w">1 Week</option>
+                                <option value="1m">1 Month</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="loadTechnicalAnalysis()" data-translate="analyzeBtn">
+                            Analyze
+                        </button>
+                    </div>
+                </div>
+
+                <div id="technicalResult" style="display: none;">
+                    <!-- Symbol and Price Info -->
+                    <div class="section-card technical-price-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h2 id="technicalSymbol" style="font-size: 1.5rem; margin-bottom: 0.25rem;">-</h2>
+                                <p id="technicalTimeframeLabel" style="color: var(--text-secondary); font-size: 0.9rem;">Timeframe: 1 Day</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: var(--text-secondary); font-size: 0.85rem;">Current Price</p>
+                                <p id="technicalPrice" style="font-size: 1.75rem; font-weight: 700;">$0.00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overall Signal -->
+                    <div class="section-card overall-signal-card">
+                        <div class="overall-signal-content">
+                            <div class="signal-summary">
+                                <h3 data-translate="overallSignal">Overall Signal</h3>
+                                <div class="overall-signal-badge" id="overallSignalBadge">HOLD</div>
+                            </div>
+                            <div class="signal-counts">
+                                <div class="signal-count buy">
+                                    <span class="count-number" id="buyCount">0</span>
+                                    <span class="count-label">Buy</span>
+                                </div>
+                                <div class="signal-count hold">
+                                    <span class="count-number" id="holdCount">0</span>
+                                    <span class="count-label">Hold</span>
+                                </div>
+                                <div class="signal-count sell">
+                                    <span class="count-number" id="sellCount">0</span>
+                                    <span class="count-label">Sell</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Oscillators Section -->
+                    <div class="section-card">
+                        <h3 class="section-title">Oscillators</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                            Oscillators measure momentum and identify overbought/oversold conditions
+                        </p>
+                        <table class="indicator-table">
+                            <thead>
+                                <tr>
+                                    <th>Indicator</th>
+                                    <th>Value</th>
+                                    <th>Signal</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="oscillatorsTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Moving Averages Section -->
+                    <div class="section-card">
+                        <h3 class="section-title">Moving Averages</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                            Moving averages identify trend direction and support/resistance levels
+                        </p>
+                        <table class="indicator-table">
+                            <thead>
+                                <tr>
+                                    <th>Indicator</th>
+                                    <th>Value</th>
+                                    <th>Signal</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody id="movingAveragesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- On-Chain Metrics Page -->
+            <section id="page-onchain" class="page">
+                <div class="onchain-header">
+                    <h1 data-translate="onchainTitle">On-Chain Metrics</h1>
+                    <p class="page-description" data-translate="onchainDesc">Analyze blockchain network activity indicators including active addresses and transaction volume</p>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoOnChain">Select Cryptocurrency</h3>
+                    <div class="onchain-form" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom: 0; min-width: 200px;">
+                            <label data-translate="chooseCryptoLabel">Cryptocurrency:</label>
+                            <select id="onchainCryptoSelect" class="form-input">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="loadOnChainMetricsPage()" data-translate="loadMetricsBtn">
+                            Load Metrics
+                        </button>
+                    </div>
+                </div>
+
+                <div id="onchainResult" style="display: none;">
+                    <!-- Symbol and Price Info -->
+                    <div class="section-card" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h2 id="onchainSymbol" style="font-size: 1.5rem; margin-bottom: 0.25rem;">-</h2>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">Blockchain Network Activity</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: var(--text-secondary); font-size: 0.85rem;">Last Updated</p>
+                                <p id="onchainLastUpdated" style="font-size: 0.9rem; font-weight: 500;">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Metrics Cards -->
+                    <div class="onchain-metrics-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                        <!-- Active Addresses Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(59, 130, 246, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(59, 130, 246, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(59, 130, 246, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #3b82f6;">
+                                    AA
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Active Addresses</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Network activity indicator</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageActiveAddresses" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageActiveAddressesChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageActiveAddressesDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- Transactions Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(16, 185, 129, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #10b981;">
+                                    TX
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Transactions</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Activity volume measure</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageTransactions" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageTransactionsChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageTransactionsDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- Exchange Flows Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(139, 92, 246, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #8b5cf6;">
+                                    EX
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Exchange Flows</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Buy/sell intentions</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Inflow:</span>
+                                    <span id="onchainPageExchangeInflow" style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Outflow:</span>
+                                    <span id="onchainPageExchangeOutflow" style="font-size: 1rem; font-weight: 600; color: var(--text-primary);">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; padding-top: 0.5rem; border-top: 1px solid rgba(139, 92, 246, 0.2);">
+                                    <span style="font-size: 0.9rem; font-weight: 600; color: var(--text-primary);">Net Flow:</span>
+                                    <span id="onchainPageExchangeNetFlow" style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary);">-</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageExchangeFlowChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageExchangeFlowDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- Whale Movements Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(245, 158, 11, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(245, 158, 11, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #f59e0b;">
+                                    WH
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Whale Movements</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Large transactions</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.75rem;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Transactions:</span>
+                                    <span id="onchainPageWhaleTransactions" style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">-</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span style="font-size: 0.85rem; color: var(--text-secondary);">Volume:</span>
+                                    <span id="onchainPageWhaleVolume" style="font-size: 1.1rem; font-weight: 600; color: var(--text-primary);">-</span>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageWhaleChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageWhaleDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- Hash Rate Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(236, 72, 153, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(236, 72, 153, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(236, 72, 153, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #ec4899;">
+                                    HR
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Hash Rate</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Network security</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageHashRate" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                                <span id="onchainPageHashRateUnit" style="font-size: 1rem; font-weight: 500; color: var(--text-secondary); margin-left: 0.25rem;">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageHashRateChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageHashRateDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- TVL Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(34, 197, 94, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(34, 197, 94, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(34, 197, 94, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #22c55e;">
+                                    TVL
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">Total Value Locked</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">DeFi protocols</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageTVL" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                                <span style="font-size: 1rem; font-weight: 500; color: var(--text-secondary); margin-left: 0.25rem;">B</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageTVLChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageTVLDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- NVT Ratio Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(168, 85, 247, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(168, 85, 247, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #a855f7;">
+                                    NVT
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">NVT Ratio</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Market cap / Volume</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageNVTRatio" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageNVTRatioChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageNVTRatioDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+
+                        <!-- MVRV Card -->
+                        <div class="onchain-metric-card" style="background: linear-gradient(135deg, rgba(251, 146, 60, 0.1) 0%, rgba(251, 146, 60, 0.05) 100%); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(251, 146, 60, 0.2);">
+                            <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem;">
+                                <div style="width: 40px; height: 40px; background: rgba(251, 146, 60, 0.2); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 700; color: #fb923c;">
+                                    MV
+                                </div>
+                                <div>
+                                    <h4 style="margin: 0; font-size: 1rem; font-weight: 600;">MVRV Ratio</h4>
+                                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-secondary);">Holder profitability</p>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0.5rem;">
+                                <span id="onchainPageMVRV" style="font-size: 1.75rem; font-weight: 700; color: var(--text-primary);">-</span>
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                <span id="onchainPageMVRVChange" class="onchain-change" style="font-size: 0.9rem; font-weight: 500;">-</span>
+                                <span style="font-size: 0.8rem; color: var(--text-secondary);">24h change</span>
+                            </div>
+                            <p id="onchainPageMVRVDesc" style="margin-top: 1rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.4;">-</p>
+                        </div>
+                    </div>
+
+                    <!-- Historical Trend Chart -->
+                    <div class="section-card" style="margin-top: 1.5rem;">
+                        <h3 class="section-title">7-Day Trend</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1rem; font-size: 0.9rem;">
+                            Historical trend of active addresses and transactions over the past 7 days
+                        </p>
+                        <div style="height: 300px; background: var(--bg-body); border-radius: 8px; padding: 1rem; position: relative;">
+                            <canvas id="onchainPageChart" style="width: 100%; height: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Sentiment Analysis Page -->
+            <section id="page-sentiment" class="page">
+                <div class="sentiment-header">
+                    <h1 data-translate="sentimentTitle">Sentiment Analysis</h1>
+                    <p class="page-description" data-translate="sentimentDesc">Analyze market sentiment from social media, news, and announcements using NLP techniques</p>
+                </div>
+
+                <div class="section-card">
+                    <h3 class="section-title" data-translate="selectCryptoSentiment">Select Cryptocurrency</h3>
+                    <div class="sentiment-form" style="display: flex; align-items: flex-end; gap: 1rem; flex-wrap: wrap;">
+                        <div class="form-group" style="margin-bottom: 0; min-width: 200px;">
+                            <label data-translate="chooseCryptoLabel">Cryptocurrency:</label>
+                            <select id="sentimentCryptoSelect" class="form-input">
+                                <option value="">-- Select --</option>
+                            </select>
+                        </div>
+                        <button class="btn-primary" onclick="loadSentimentAnalysis()" data-translate="analyzeSentimentBtn">
+                            Analyze Sentiment
+                        </button>
+                    </div>
+                </div>
+
+                <div id="sentimentResult" style="display: none;">
+                    <!-- Overall Sentiment Card -->
+                    <div class="section-card sentiment-overall-card">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                            <div>
+                                <h2 id="sentimentSymbol" style="font-size: 1.5rem; margin-bottom: 0.25rem;">-</h2>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem;">Market Sentiment Analysis</p>
+                            </div>
+                            <div style="text-align: right;">
+                                <p style="color: var(--text-secondary); font-size: 0.85rem;">Overall Sentiment</p>
+                                <div id="sentimentOverallBadge" style="font-size: 1.5rem; font-weight: 700; margin-top: 0.25rem;">-</div>
+                                <p id="sentimentOverallScore" style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem;">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sentiment Distribution -->
+                    <div class="section-card" style="margin-top: 1.5rem;">
+                        <h3 class="section-title">Sentiment Distribution</h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <div style="background: rgba(16, 185, 129, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.2); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #10b981;" id="sentimentPositiveCount">-</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Positive</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;" id="sentimentPositivePct">-</div>
+                            </div>
+                            <div style="background: rgba(239, 68, 68, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.2); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #ef4444;" id="sentimentNegativeCount">-</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Negative</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;" id="sentimentNegativePct">-</div>
+                            </div>
+                            <div style="background: rgba(148, 163, 184, 0.1); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(148, 163, 184, 0.2); text-align: center;">
+                                <div style="font-size: 2rem; font-weight: 700; color: #94a3b8;" id="sentimentNeutralCount">-</div>
+                                <div style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.5rem;">Neutral</div>
+                                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.25rem;" id="sentimentNeutralPct">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Price Prediction Signal -->
+                    <div class="section-card" style="margin-top: 1.5rem;">
+                        <h3 class="section-title">Price Prediction Signal</h3>
+                        <div style="display: flex; align-items: center; gap: 1.5rem; margin-top: 1rem; flex-wrap: wrap;">
+                            <div>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">Recommendation</p>
+                                <div id="sentimentRecommendation" style="font-size: 1.5rem; font-weight: 700; padding: 0.75rem 1.5rem; border-radius: 8px; display: inline-block;">-</div>
+                            </div>
+                            <div>
+                                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 0.5rem;">NLP Method</p>
+                                <p id="sentimentNLPMethod" style="font-size: 1rem; font-weight: 500;">-</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Source Breakdown -->
+                    <div class="section-card" style="margin-top: 1.5rem;">
+                        <h3 class="section-title">Source Breakdown</h3>
+                        
+                        <!-- Twitter Section -->
+                        <div style="margin-top: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="font-size: 1.1rem; font-weight: 600;">Twitter/X</h4>
+                                <div>
+                                    <span id="twitterSentimentBadge" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;">-</span>
+                                    <span style="margin-left: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;" id="twitterAverageScore">-</span>
+                                </div>
+                            </div>
+                            <div id="twitterPosts" style="display: grid; gap: 0.75rem;">
+                                <!-- Twitter posts will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Reddit Section -->
+                        <div style="margin-top: 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="font-size: 1.1rem; font-weight: 600;">Reddit</h4>
+                                <div>
+                                    <span id="redditSentimentBadge" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;">-</span>
+                                    <span style="margin-left: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;" id="redditAverageScore">-</span>
+                                </div>
+                            </div>
+                            <div id="redditPosts" style="display: grid; gap: 0.75rem;">
+                                <!-- Reddit posts will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- News Section -->
+                        <div style="margin-top: 1.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <h4 style="font-size: 1.1rem; font-weight: 600;">News & Announcements</h4>
+                                <div>
+                                    <span id="newsSentimentBadge" style="padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; font-size: 0.9rem;">-</span>
+                                    <span style="margin-left: 0.5rem; color: var(--text-secondary); font-size: 0.85rem;" id="newsAverageScore">-</span>
+                                </div>
+                            </div>
+                            <div id="newsArticles" style="display: grid; gap: 0.75rem;">
+                                <!-- News articles will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings  -->
+            <section id="page-settings" class="page">
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-settings-tab="profile" data-translate="profile">Profile</button>
+                    <button class="settings-tab" data-settings-tab="notifications" data-translate="notifications">Notifications</button>
+                    <button class="settings-tab" data-settings-tab="appearance" data-translate="appearance">Appearance</button>
+                </div>
+
+                <div class="settings-content active" id="settings-profile">
+                    <div class="section-card">
+                        <h3 class="section-title" data-translate="personalInfo">Personal Information</h3>
+                        <p class="section-subtitle" data-translate="personalInfoDesc">Manage your name, email, and profile picture.</p>
+                        
+                        <div class="form-group">
+                            <label data-translate="nameLabel">Name</label>
+                            <input type="text" value="Alex Johnson" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="emailLabel">Email</label>
+                            <input type="email" value="alex.johnson@example.com" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label data-translate="profilePicture">Profile Picture</label>
+                            <div class="profile-picture-row">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" alt="Profile" class="profile-picture">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-card logout-section">
+                        <h3 class="section-title" data-translate="session">Session</h3>
+                        <p class="section-subtitle" data-translate="sessionDesc">Log out from your account.</p>
+                        <button class="btn-logout" onclick="logout()" data-translate="logOut">Log Out</button>
+                    </div>
+                </div>
+
+                <!-- Notifications  -->
+                <div class="settings-content" id="settings-notifications">
+                    <div class="section-card">
+                        <h3 class="section-title">Notification Preferences</h3>
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <span>Price Alerts</span>
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="toggle-label">
+                                <span>Portfolio Updates</span>
+                                <input type="checkbox" checked>
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label class="toggle-label">
+                                <span>Market News</span>
+                                <input type="checkbox">
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-content" id="settings-appearance">
+                    <div class="section-card">
+                        <h3 class="section-title">Theme</h3>
+                        <div class="theme-options">
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="light" checked>
+                                <span class="theme-preview light"></span>
+                                <span>Light</span>
+                            </label>
+                            <label class="theme-option">
+                                <input type="radio" name="theme" value="dark">
+                                <span class="theme-preview dark"></span>
+                                <span>Dark</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p data-translate="footerText">© 2025 CryptoAnalyzer. All rights reserved.</p>
+            </footer>
+        </main>
+    </div>
+
+    <div class="modal" id="addCryptoModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add Cryptocurrency to Watchlist</h3>
+                <button class="modal-close" onclick="closeAddCryptoModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Select Cryptocurrency</label>
+                    <select id="cryptoSelect" class="form-input">
+                        <option value="">-- Choose a cryptocurrency --</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeAddCryptoModal()">Cancel</button>
+                <button class="btn-primary" onclick="addToWatchlist()">Add to Watchlist</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

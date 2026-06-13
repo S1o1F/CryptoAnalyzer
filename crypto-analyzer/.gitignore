@@ -1,0 +1,33 @@
+# Environment variables - IMPORTANT: Never commit your API keys!
+.env
+.env.local
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Database files (but keep database/data.db if already committed)
+# Uncomment the next line if you want to ignore the database too:
+# database/*.db
+database/*.db-shm
+database/*.db-wal
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
