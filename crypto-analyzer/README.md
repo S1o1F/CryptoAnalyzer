@@ -1,4 +1,4 @@
-# Домашна 3 - Crypto Analysis System
+#  CryptoAnalyzer System
 
 A cryptocurrency analysis system with FastAPI backend and web frontend for viewing crypto data, technical indicators, and predictions.
 
