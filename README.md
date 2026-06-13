@@ -2,6 +2,9 @@
 
 A cryptocurrency analysis system with FastAPI backend and web frontend for viewing crypto data, technical indicators, and predictions.
 
+## Live demo
+Access the system directly at: https://crypto-frontend-dfaub2h0d9g4fgg6.swedencentral-01.azurewebsites.net/
+
 ## Setup Instructions
 ### 1. Install Dependencies
 pip install -r requirements.txt
