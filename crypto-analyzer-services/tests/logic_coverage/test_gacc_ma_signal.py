@@ -1,24 +1,16 @@
 import pytest
 from api import ma_signal
 
-class TestMaSignalGACC:
 
-    def test_c1_true_context_a(self):
-        """c1=True (ma=NaN), c2=False (price=100) c1 determines P1."""
-        assert ma_signal(100, float('nan')) == "HOLD"
+def test_gacc_ma_signal():
+    # c1 (isna(ma)) affects result
+    assert ma_signal(100, float('nan')) == "HOLD"    # c1=T c2=F -> P1=True -> HOLD
+    assert ma_signal(110, 100) == "BUY"                 # c1=F c2=F -> P1=False -> price>ma -> BUY
 
-    def test_c1_false_context_b(self):
-        """c1=False (ma=250), c2=False (price=300) c1 determines P1 """
-        assert ma_signal(300, 250) == "BUY"
+    # c2 (isna(price)) affects result
+    assert ma_signal(float('nan'), 90) == "HOLD"       # c1=F c2=T -> P1=True -> HOLD
+    assert ma_signal(90, 100) == "SELL"                   # c1=F c2=F -> P1=False -> price<ma -> SELL
 
-    def test_c2_true_context_c(self):
-        """c1=False (ma=90), c2=True (price=NaN)
-        c2 determines P1"""
-        assert ma_signal(float('nan'), 90) == "HOLD"
-
-    def test_c2_false_context_d(self):
-        """c2=False (price=45), c1=False (ma=45) c2 determines P1"""
-        assert ma_signal(45, 45) == "HOLD"
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
