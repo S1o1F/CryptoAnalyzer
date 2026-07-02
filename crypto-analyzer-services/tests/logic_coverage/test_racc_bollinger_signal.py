@@ -19,3 +19,9 @@ class TestBollingerSignalRACC:
     def test_c3_price_is_nan(self):
         """c1=F c2=F c3=T -> P1=True -> HOLD"""
         assert bollinger_signal(float('nan'), 90, 110) == "HOLD"
+
+    def test_price_below_lower_buy(self):
+        assert bollinger_signal(85, 90, 110) == "BUY"
+
+    def test_price_above_upper_sell(self):
+        assert bollinger_signal(115, 90, 110) == "SELL"
